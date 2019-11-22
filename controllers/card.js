@@ -2,7 +2,7 @@ const Card = require('../models').Card
 
 exports.listCard = async function(req, res) {
   try {
-    const cardCollection = await Card.findAll({})
+    const cardCollection = await Card.findAll()
     res.status(200).send(cardCollection)
   } catch (err) {
     res.status(500).send(err)

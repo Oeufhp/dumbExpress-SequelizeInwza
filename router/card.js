@@ -5,8 +5,8 @@ const cardController = require('../controllers/card')
 
 router.get('/', cardController.listCard)
 router.get('/:id', cardController.getCard)
-router.post('/', cardController.createCard)
-router.post('/:id', cardController.updateCard)
-router.delete('/:id', cardController.deleteCard)
+// router.post('/', cardController.createCard)
+// router.post('/:id', cardController.updateCard)
+// router.delete('/:id', cardController.deleteCard)
 
 module.exports = router

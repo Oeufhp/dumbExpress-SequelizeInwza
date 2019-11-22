@@ -1,9 +1,19 @@
 const User = require('../models').User
+const Card = require('../models').Card
 
-exports.listUser = async function(req, res) {
+function listAllUser () {
+  return User.findAll({ raw: true })
+}
+
+exports.listUser = function(req, res) {
   try {
-    const userCollection = await User.findAll({})
-    res.status(200).send(userCollection)
+    listAllUser()
+    .then(result => {
+      console.log(result)
+      res.status(200).send(result)  
+    })
+    // console.log(userCollection)
+    // res.status(200).send(userCollection)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)
@@ -15,8 +25,11 @@ exports.getUser = async function(req, res) {
     const user = await User.findAll({
       where: {
         id: req.params.id
-      }
+      },
+      raw: true
     })
+
+    console.log(user)
 
     if (user) {
       res.status(200).send(user)
@@ -30,11 +43,16 @@ exports.getUser = async function(req, res) {
 
 exports.createUser = async function(req, res) {
   try {
-    const newUser = await User.create({
-      name: req.body.name,
-      email: req.body.email
+    const newUser = await User.create({ email: req.body.email, name: req.body.name })
+    const card = await Card.create({ 
+      name: req.body.card.name,
+      status: req.body.card.status,
+      content: req.body.card.content,
+      category: req.body.card.category,
+      userId: newUser.dataValues.id
     })
-    res.status(201).send(newUser.dataValues)
+
+    res.status(201).send({...newUser.dataValues,card: { ...card.dataValues}})
   } catch (err) {
     res.status(500).send(err)
   }

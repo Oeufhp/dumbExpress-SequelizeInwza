@@ -4,10 +4,12 @@ const morgan = require('morgan')
 const app = express()
 const userAPI = require('./router/user')
 const cardAPI = require('./router/card')
+const loginAPI = require('./router/login')
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
+app.use('/login', loginAPI)
 app.use('/api/users', userAPI)
 app.use('/api/cards', cardAPI)
 

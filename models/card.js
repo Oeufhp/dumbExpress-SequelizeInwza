@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     Card.belongsTo(models.User, {
       foreignKey: 'userId',
-      onDelete: 'CASCADE'
     })
   };
+  sequelize.sync({ force: true })
   return Card;
 };
