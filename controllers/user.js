@@ -1,19 +1,16 @@
 const User = require('../models').User
 const Card = require('../models').Card
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 
 function listAllUser () {
   return User.findAll({ raw: true })
 }
 
-exports.listUser = function(req, res) {
+exports.listUser = async function(req, res) {
   try {
-    listAllUser()
-    .then(result => {
-      console.log(result)
-      res.status(200).send(result)  
-    })
-    // console.log(userCollection)
-    // res.status(200).send(userCollection)
+    const users = await User.findAll({ raw: true })
+    res.status(200).send(users)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)
@@ -22,7 +19,7 @@ exports.listUser = function(req, res) {
 
 exports.getUser = async function(req, res) {
   try {
-    const user = await User.findAll({
+    const user = await User.findOne({
       where: {
         id: req.params.id
       },
@@ -43,17 +40,12 @@ exports.getUser = async function(req, res) {
 
 exports.createUser = async function(req, res) {
   try {
-    const newUser = await User.create({ email: req.body.email, name: req.body.name })
-    const card = await Card.create({ 
-      name: req.body.card.name,
-      status: req.body.card.status,
-      content: req.body.card.content,
-      category: req.body.card.category,
-      userId: newUser.dataValues.id
-    })
+    const passwordHash = await bcrypt.hash(req.body.password, saltRounds)
+    const user = await User.create({ name: req.body.name, email: req.body.email, password: passwordHash })
 
-    res.status(201).send({...newUser.dataValues,card: { ...card.dataValues}})
+    res.status(201).send(user)
   } catch (err) {
+    console.log(err)
     res.status(500).send(err)
   }
 }

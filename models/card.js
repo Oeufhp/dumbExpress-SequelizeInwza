@@ -13,6 +13,5 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
     })
   };
-  sequelize.sync({ force: true })
   return Card;
 };
